@@ -18,9 +18,10 @@ def getMatchBirthdays(birthdays):
         return None
 
     for a, birthdayA in enumerate(birthdays):
-        for b, birthdayB in enumerate(birthdays[a + 1 : ]):
+        for b, birthdayB in enumerate(birthdays[a + 1 :]):
             if birthdayA == birthdayB:
                 return birthdayA
+        
 
 #Display intro
 print("Birthday Paradox")
@@ -39,9 +40,9 @@ print()
 print('Here are', numBDays, 'birthdays:')
 birthdays = getBirthdays(numBDays)
 for i, birthday in enumerate(birthdays):
+    
     if i != 0:
         print(', ', end='')
-
         monthName = MONTHS[birthday.month - 1]
         dateText = '{} {}'.format(monthName, birthday.day)
         print(dateText, end='')
@@ -60,7 +61,7 @@ if match != None:
     print(' multiple people have a birthday on', dateText)
 
 else:
-    print('There are no matching birthdays.')
+    print(' there are no matching birthdays.')
 print()    
 
 
