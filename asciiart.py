@@ -1,4 +1,5 @@
-import Image
-im = Image.open('https://robertheaton.com/images/ascii-pineapple.jpg')
+from PIL import Image
+
+image = Image.open('ascii-pineapple.jpg')
 print('Successfully loaded image')
-print("Image Size:", im.height, 'X', im.width)
+print("Image Size:", image.height, 'X', image.width)
