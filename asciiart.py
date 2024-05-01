@@ -1,14 +1,14 @@
 from PIL import Image
+from colorama import Fore, Style
 
 ASCII_characters = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+MAX_PIXEL_VALUE = 255
 
 
-def read_pixels_to_array(filepath):
-
-    image = Image.open(filepath)
+def read_pixels_to_array(image):
 
     height, width = image.size
-
+    
     pixels = list(image.getdata())
 
     pixel_array = [pixels[i * width: (i + 1) * width] for i in range(height)]
@@ -42,6 +42,20 @@ def read_pixels_to_brightness(pixelMatrix, algo_name="average"):
 
     return intensity_matrix            
 
+def normalize_intensity_matrix(intensity_matrix):
+    normalized_intensity_matrix = []
+    max_pixel = max(map(max, intensity_matrix))
+    min_pixel = min(map(min, intensity_matrix))
+    for row in intensity_matrix:
+        rescaled_row = []
+        for p in row:
+            r = MAX_PIXEL_VALUE * (p - min_pixel) / float(max_pixel - min_pixel)
+            rescaled_row.append(r)
+        normalized_intensity_matrix.append(rescaled_row) 
+
+    return normalized_intensity_matrix 
+
+
 def convert_to_ascii(intensity_matrix, ascii_characters):
 
     ascii_matrix = []
@@ -54,18 +68,25 @@ def convert_to_ascii(intensity_matrix, ascii_characters):
 
     return ascii_matrix
 
+def print_ascii_martix(ascii_matrix, text_color):
+    for row in ascii_matrix:
+        line = [p+p+p for p in row]
+        print(text_color + "".join(line))
 
-
-print("Successfully constructed ASCII matrix!")
+    print(Style.RESET_ALL)
 
 
 
 filepath = 'ascii-pineapple.jpg'
-print_array = read_pixels_to_array(filepath)
+image = Image.open(filepath)
+
+print_array = read_pixels_to_array(image)
 print_average = read_pixels_to_brightness(print_array, algo_name='average')
 #print("Iterating through pixel brightnesses:", print_average)
-ascii_representation  = convert_to_ascii(print_average, ASCII_characters)
-print("Iterating through pixel ASCII characters:", ascii_representation)
+normalized_matrix = normalize_intensity_matrix(print_average)
+ascii_representation  = convert_to_ascii(normalized_matrix, ASCII_characters)
+#print("Iterating through pixel ASCII characters:", ascii_representation)
+print_ascii_martix(ascii_representation, Fore.GREEN)
 
 #I am representing 255 characters onto 70 characters of the ACII character matrix.
 #For each number, I map it onto the appropriate character
