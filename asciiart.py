@@ -7,11 +7,12 @@ MAX_PIXEL_VALUE = 255
 
 def read_pixels_to_array(image):
 
-    height, width = image.size
+
+    image.thumbnail((image.height, 200))
     
     pixels = list(image.getdata())
 
-    pixel_array = [pixels[i * width: (i + 1) * width] for i in range(height)]
+    pixel_array = [pixels[i * image.width: (i + 1) * image.width] for i in range(image.height)]
 
     return pixel_array        
 
