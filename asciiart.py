@@ -5,14 +5,18 @@ ASCII_characters = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#M
 MAX_PIXEL_VALUE = 255
 
 
-def read_pixels_to_array(image):
+def read_pixels_to_array(image, height):
 
 
-    image.thumbnail((image.height, 200))
+    image.thumbnail((height, 200))
+    new_width = 50
+    new_height = 50
+
+    resized_image = image.resize((new_width, new_height))
     
-    pixels = list(image.getdata())
+    pixels = list(resized_image.getdata())
 
-    pixel_array = [pixels[i * image.width: (i + 1) * image.width] for i in range(image.height)]
+    pixel_array = [pixels[i: i+resized_image.width] for i in range(0, len(pixels), resized_image.width)]
 
     return pixel_array        
 
@@ -45,8 +49,9 @@ def read_pixels_to_brightness(pixelMatrix, algo_name="average"):
 
 def normalize_intensity_matrix(intensity_matrix):
     normalized_intensity_matrix = []
-    max_pixel = max(map(max, intensity_matrix))
-    min_pixel = min(map(min, intensity_matrix))
+    flattened_matrix = [value for row in intensity_matrix for value in row]
+    max_pixel = max(flattened_matrix)
+    min_pixel = min(flattened_matrix)
     for row in intensity_matrix:
         rescaled_row = []
         for p in row:
@@ -81,7 +86,7 @@ def print_ascii_martix(ascii_matrix, text_color):
 filepath = 'ascii-pineapple.jpg'
 image = Image.open(filepath)
 
-print_array = read_pixels_to_array(image)
+print_array = read_pixels_to_array(image, 1000)
 print_average = read_pixels_to_brightness(print_array, algo_name='average')
 #print("Iterating through pixel brightnesses:", print_average)
 normalized_matrix = normalize_intensity_matrix(print_average)
