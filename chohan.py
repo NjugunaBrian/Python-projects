@@ -7,7 +7,7 @@ print("Cho-han")
 purse = 5000
 
 while True:
-    print('How have', purse, 'mon. How much do you bet? (OR QUIT)')
+    print('You have', purse, 'mon. How much do you bet? (OR QUIT)')
     while True:
         pot = input('> ')
         if pot.upper() == 'QUIT':
