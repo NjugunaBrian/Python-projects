@@ -1,4 +1,3 @@
-
 def new_Board():
     return [[None for _ in range(3)] for _ in range(3)]
 
@@ -55,7 +54,7 @@ def make_move(board, move_coords, move):
     
 def is_valid_move(board, move_coords):
     move_coords = None
-    while True: 
+    while True:
         move_coords = get_move()
         X, Y = move_coords
         if 0 <= X < len(board) and 0 <= Y < len(board[0]):
@@ -65,11 +64,13 @@ def is_valid_move(board, move_coords):
             print("Invalid move, try again")
 
 
+    
 render(board)
-#get_move()
+get_move()
 move_coords = get_move()
-#make_move(board, move_coords_1, 'X')
 board = make_move(board, move_coords, "X")
 render(board)
-board = make_move(board, move_coords, "X")
-render(board)    
+
+
+
+
