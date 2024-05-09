@@ -1,8 +1,6 @@
 def new_Board():
     return [[None for _ in range(3)] for _ in range(3)]
 
-
-
 def render(playBoard):
     #print row headers
     print("  0   1   2")
@@ -34,13 +32,9 @@ def get_move():
 
     move_coords = (X_move, Y_move)
     return(move_coords)
+ 
 
-
-#board[0][1] = 'X'
-#board[1][1] = 'O' 
-
-def make_move(board, move_coords, move):
-    
+def make_move(board, move_coords, move):   
     
     X, Y = move_coords
 
@@ -53,7 +47,6 @@ def make_move(board, move_coords, move):
     else:
         print(f"Exception: 'Can't make move {(X, Y)}, square already taken!'")
 
-
     return new_board
     
 def is_board_full(board):
@@ -63,6 +56,37 @@ def is_board_full(board):
                 return False
             
     return True
+
+
+def get_all_line_coords():
+    cols = []
+    for x in range(3):
+        col = []
+        for y in range(3):
+            col.append((x, y))
+        cols.append(col)
+
+    rows = []
+    for x in range(3):
+        row = []
+        for y in range(3):
+            row.append((x, y))
+        rows.append(row)
+
+    diagonals = [[(0, 0), (1, 1), (2, 2)], [(2, 0), (1, 1), (0, 2)]]
+
+    return cols + rows + diagonals
+           
+def get_winner(board):
+    get_all_lines = get_all_line_coords()
+     
+    for line in get_all_lines:
+        line_values = [board[x][y] for (x, y) in line]
+        if len(set(line_values)) == 1 and line_values[0] is not None:
+            return line_values[0] 
+   
+
+    return None
 
 def main():
     board = new_Board()
@@ -76,12 +100,17 @@ def main():
         board = make_move(board, move_coords, current_player_id)
         render(board)
         current_player_index += 1
-        while not is_board_full(board):
-            current_player_id = players[current_player_index % 2]
-            move_coords = get_move()
-            board = make_move(board, move_coords, current_player_id)
+
+        winner = get_winner(board)
+
+        if winner is not None:
             render(board)
-            current_player_index += 1
+            print(f"The winner is {winner}")
+            break
+        if is_board_full(board):
+            render(board)
+            print("It's a DRAW!")
+            break       
         
     
 if __name__ == '__main__':
