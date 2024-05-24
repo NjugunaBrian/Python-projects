@@ -16,24 +16,49 @@ def render(playBoard):
 
 
 
+
 def random_ai(board, move):
 
     points = [(row, col) for row in range(3) for col in range(3)]
 
         
     (row, col) = random.choice(points)
+    if board[row][col] is not None:
+        raise Exception("Illegal move!")
+
     new_board = [row[:] for row in board]
     
 
     new_board[row][col] = move
 
-    if 0 <= row < len(new_board) and 0 <= col < len(new_board[0]):
-        if new_board[row][col] is None:
-            return new_board[row][col]
-    else:
-        print(f"Exception: 'Can't make move {(row, col)}, square already taken!'")
-
     return new_board
+
+
+def get_winning_move(board, move):
+    get_all_lines = get_all_line_coords()
+
+    for line in get_all_lines:
+        n_me = 0
+        n_them = 0
+        n_new = 0
+        last_new_coords  = None
+
+        for (x, y) in line:
+            value = board[x][y]
+            if value == move:
+                n_me += 1
+            elif value is None:
+                n_new += 1
+                last_new_coords = (x, y)
+            else:
+                n_them += 1
+
+        if n_me == 2 and n_new == 1:
+            return last_new_coords            
+        
+        last_new_coords = move
+     
+    return move
 
 def is_board_full(board):
     for col in board:
@@ -69,7 +94,7 @@ def get_winner(board):
     for line in get_all_lines:
         line_values = [board[x][y] for (x, y) in line]
         if len(set(line_values)) == 1 and line_values[0] is not None:
-            return line_values[0] 
+            return line_values[0]
    
 
     return None
@@ -84,6 +109,7 @@ def main():
         current_player_id = players[current_player_index % 2]       
         board = random_ai(board, current_player_id)
         render(board)
+        get_winning_move(board, current_player_id)
         current_player_index += 1
 
         winner = get_winner(board)
@@ -100,6 +126,15 @@ def main():
     
 if __name__ == '__main__':
     main()
+
+
+#find_winning_moves_ai will need to use the current_player argument,
+#because it needs to know whose winning moves it should be trying to find
+
+#the winning move is supposed to complete a gap where the the current player can win
+#arguments are board and move in my case
+#if in a row, column or diagonal where two spots match our current player, we want to play there so that we can win.
+
 
     
     
