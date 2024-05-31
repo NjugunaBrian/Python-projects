@@ -1,4 +1,7 @@
 import random
+import sys
+from symbol import eval_input
+import aiutils as utils
 
 def new_Board():
     return [[None for _ in range(3)] for _ in range(3)]
@@ -15,26 +18,20 @@ def render(playBoard):
     print(playBoard); 
 
 
+def random_move(board):
+  points = [(row, col) for row in range(3) for col in range(3)]
 
-
-def random_ai(board, move):
-
-    points = [(row, col) for row in range(3) for col in range(3)]
-
-        
+  while True:
     (row, col) = random.choice(points)
-    if board[row][col] is not None:
-        raise Exception("Illegal move!")
-
-    new_board = [row[:] for row in board]
+    if board[row][col] is None:
+      return (row, col)
+    
+def random_ai(board, move):
+    return random_move(board)
     
 
-    new_board[row][col] = move
 
-    return new_board
-
-
-def get_winning_move(board, move):
+def find_my_winning_move(board, move):
     get_all_lines = get_all_line_coords()
 
     for line in get_all_lines:
@@ -54,11 +51,53 @@ def get_winning_move(board, move):
                 n_them += 1
 
         if n_me == 2 and n_new == 1:
-            return last_new_coords            
-        
-        last_new_coords = move
+            return last_new_coords                   
      
-    return move
+    return random_ai(board, move)
+
+def blocking_their_winning_move(board, move):
+    their_winning_move = find_my_winning_move(board, utils.get_opponent(move))
+    if their_winning_move:
+        return their_winning_move
+
+def find_all_winning_moves(board, move):
+    my_winning_move = find_my_winning_move(board, move)
+    if my_winning_move:
+        return my_winning_move
+    
+    their_winning_move = blocking_their_winning_move(board, move)
+    if their_winning_move:
+        return their_winning_move
+    
+    return random_ai(board, move)
+
+def human_player(board, move):
+    x = int(eval_input("X?: "))
+    y = int(eval_input("X?: "))
+    return (x, y)
+
+
+def get_move(board, move, algorithm_name):
+    if algorithm_name == 'random_ai':
+        return random_ai(board, move)    
+    elif algorithm_name == 'find_my_winning_move':
+        return find_my_winning_move(board, move)
+    elif algorithm_name == 'find_all_winning_moves':
+        return find_all_winning_moves(board, move)
+    elif algorithm_name == 'human_player':
+        return human_player(board, move)
+    else:
+        raise Exception("Unknown algorithm name: " + algorithm_name) 
+    
+def make_move(board, move, move_coords):
+
+    x, y = move_coords
+
+    new_board = [row[:] for row in board]
+    
+    new_board[x][y] = move
+
+    return new_board
 
 def is_board_full(board):
     for col in board:
@@ -99,17 +138,23 @@ def get_winner(board):
 
     return None
 
-def main():
+def main(p1_name, p2_name):
     board = new_Board()
     render(board)
-    players = ['X', 'O']
+    players = [('X', p1_name), ('O', p2_name)]
+
 
     current_player_index = 0
     while True:
-        current_player_id = players[current_player_index % 2]       
-        board = random_ai(board, current_player_id)
+        current_player_id, current_player_name = players[current_player_index % 2]
+        
+        move_coords = get_move(board, current_player_id, current_player_name)
+        if move_coords is None:
+            print("No more moves available. Game over.")
+            break
+        board = make_move(board, current_player_id, move_coords)
         render(board)
-        get_winning_move(board, current_player_id)
+
         current_player_index += 1
 
         winner = get_winner(board)
@@ -125,15 +170,15 @@ def main():
         
     
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) < 3:
+        print("Usage: python tictactoe.py <player1_name> <player2_name>")
+        exit(1) 
 
+    p1_name = sys.argv[1]
+    p2_name = sys.argv[2]
 
-#find_winning_moves_ai will need to use the current_player argument,
-#because it needs to know whose winning moves it should be trying to find
+    main(p1_name, p2_name)
 
-#the winning move is supposed to complete a gap where the the current player can win
-#arguments are board and move in my case
-#if in a row, column or diagonal where two spots match our current player, we want to play there so that we can win.
 
 
     
