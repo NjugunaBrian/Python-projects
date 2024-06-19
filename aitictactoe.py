@@ -136,7 +136,7 @@ def get_winner(board):
             return line_values[0]
    
 
-    return None
+    
 
 def main(p1_name, p2_name):
     board = new_Board()
@@ -158,15 +158,40 @@ def main(p1_name, p2_name):
         current_player_index += 1
 
         winner = get_winner(board)
-
+        return winner
+        '''
         if winner is not None:
             render(board)
             print(f"The winner is {winner}")
-            break
+            if winner == 'X':
+                return 1
+            else:
+                return 2
+            
+            
         if is_board_full(board):
             render(board)
             print("It's a DRAW!")
-            break       
+            return 0       
+        '''
+
+def repeated_battles(p1_name, p2_name):
+    drawWin = 0
+    Xwin = 0
+    Owin = 0
+    #we have to tally the amount of times a score becomes 0, 1 or 2 so as to establish
+    winner = main(p1_name, p2_name)
+    winner = main(p1_name, p2_name)
+    winner = main(p1_name, p2_name)
+
+    if winner == 'X':
+        Xwin += 1
+    elif winner == 'O':
+        Owin += 1
+    else:
+        drawWin += 1
+
+    print(Xwin)        
         
     
 if __name__ == '__main__':
@@ -177,23 +202,4 @@ if __name__ == '__main__':
     p1_name = sys.argv[1]
     p2_name = sys.argv[2]
 
-    main(p1_name, p2_name)
-
-
-
-    
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
+    repeated_battles(p1_name, p2_name)
