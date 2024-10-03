@@ -77,25 +77,25 @@ def human_player(board, move):
     return (x, y)
 
 
-def get_move(board, move, algorithm_name):
+def get_move(board, current_player_id, algorithm_name):
     if algorithm_name == 'random_ai':
-        return random_ai(board, move)    
+        return random_ai(board, current_player_id)    
     elif algorithm_name == 'find_my_winning_move':
-        return find_my_winning_move(board, move)
+        return find_my_winning_move(board, current_player_id)
     elif algorithm_name == 'find_all_winning_moves':
-        return find_all_winning_moves(board, move)
+        return find_all_winning_moves(board, current_player_id)
     elif algorithm_name == 'human_player':
-        return human_player(board, move)
+        return human_player(board, current_player_id)
     else:
         raise Exception("Unknown algorithm name: " + algorithm_name) 
     
-def make_move(board, move, move_coords):
+def make_move(board, player, move_coords):
 
     x, y = move_coords
 
     new_board = [row[:] for row in board]
     
-    new_board[x][y] = move
+    new_board[x][y] = player
 
     return new_board
 
